@@ -1,0 +1,7 @@
+{
+  "name": "Cal-Track: AI Nutrition Assistant",
+  "description": "An AI-powered nutrition assistant that allows users to upload or capture images of food to get an accurate nutritional analysis, including calories, macronutrients, and micronutrients. Features include a daily food diary and smart recommendations.",
+  "requestFramePermissions": [
+    "camera"
+  ]
+}
