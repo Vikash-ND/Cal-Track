@@ -22,3 +22,8 @@ export interface DiaryEntry extends NutritionInfo {
   id: string;
   imageUrl: string;
 }
+
+export interface ChatMessage {
+  role: 'user' | 'model';
+  text: string;
+}

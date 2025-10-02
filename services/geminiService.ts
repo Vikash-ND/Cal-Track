@@ -1,6 +1,6 @@
 
-import { GoogleGenAI, Type } from "@google/genai";
-import { NutritionInfo } from '../types';
+import { GoogleGenAI, Type, Chat } from "@google/genai";
+import { NutritionInfo, ChatMessage } from '../types';
 
 const fileToGenerativePart = async (file: File) => {
   const base64EncodedDataPromise = new Promise<string>((resolve) => {
@@ -87,5 +87,33 @@ export const analyzeImageWithGemini = async (imageFile: File): Promise<Nutrition
     } catch (error) {
         console.error("Error analyzing image with Gemini:", error);
         throw new Error("Failed to analyze image. The AI model could not process the request.");
+    }
+};
+
+export const getChatbotResponse = async (history: ChatMessage[], newMessage: string): Promise<string> => {
+    if (!process.env.API_KEY) {
+        throw new Error("API_KEY environment variable not set");
+    }
+    const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+
+    const chatHistory = history.map(msg => ({
+      role: msg.role,
+      parts: [{ text: msg.text }]
+    }));
+
+    const chat: Chat = ai.chats.create({
+      model: 'gemini-2.5-flash',
+      history: chatHistory,
+      config: {
+        systemInstruction: 'You are a friendly and knowledgeable nutrition assistant named Cal. Answer questions about food, health, and diet. Keep your answers concise and easy to understand.',
+      },
+    });
+    
+    try {
+      const response = await chat.sendMessage({ message: newMessage });
+      return response.text;
+    } catch (error) {
+      console.error("Error getting chatbot response:", error);
+      throw new Error("The AI assistant is currently unavailable.");
     }
 };

@@ -8,7 +8,8 @@ import ImageUploader from './components/ImageUploader';
 import NutritionCard from './components/NutritionCard';
 import DailySummary from './components/DailySummary';
 import DiaryEntry from './components/DiaryEntry';
-import { RefreshIcon } from './components/IconComponents';
+import Chatbot from './components/Chatbot';
+import { RefreshIcon, ChatIcon } from './components/IconComponents';
 
 const App: React.FC = () => {
   const [imageFile, setImageFile] = useState<File | null>(null);
@@ -17,6 +18,7 @@ const App: React.FC = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [dailyDiary, setDailyDiary] = useState<DiaryEntryType[]>([]);
+  const [isChatbotOpen, setIsChatbotOpen] = useState(false);
 
   const handleImageSelect = useCallback((file: File) => {
     setImageFile(file);
@@ -73,7 +75,7 @@ const App: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gray-900 text-gray-200 font-sans">
-      <div className="container mx-auto max-w-lg p-4">
+      <div className="container mx-auto max-w-lg p-4 pb-24">
         <Header />
         <main className="mt-6">
           {!imageFile && <ImageUploader onImageSelect={handleImageSelect} />}
@@ -119,6 +121,16 @@ const App: React.FC = () => {
           )}
         </main>
       </div>
+
+      <button
+        onClick={() => setIsChatbotOpen(true)}
+        className="fixed bottom-6 right-6 bg-brand-cyan-500 hover:bg-brand-cyan-400 text-white rounded-full p-4 shadow-lg transform transition-transform hover:scale-110"
+        aria-label="Open AI nutritionist chatbot"
+      >
+        <ChatIcon className="w-8 h-8" />
+      </button>
+
+      {isChatbotOpen && <Chatbot onClose={() => setIsChatbotOpen(false)} />}
     </div>
   );
 };
